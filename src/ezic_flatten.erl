@@ -9,7 +9,7 @@
 
 
 %% @todo move MAXYEAR to config file
--define(MAXYEAR, 2500). % last year to process flatzones for.
+-define(MAXYEAR, 2050). % last year to process flatzones for.
 
 
 -export([
