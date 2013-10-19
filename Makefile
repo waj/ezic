@@ -1,53 +1,9 @@
-ERLC_WARNINGS := -W1
-MNESIA_DIR := db
-RUN_INIT := -boot start_sasl  ##-run ezic_db init
-DEBUG := -DNODEBUG -Ddebug
-TEST := 
-TZSET := northamerica
-SHELL := /bin/bash
-COMPILE := ./src/*.erl
 
-all : clean compile
-
-
-nowarn : ERLC_WARNINGS = -W0
-nowarn : clean compile
-
-
-test : ERLC_WARNINGS := -W0
-test : TEST := -DTEST 
-test : RUN_INIT += -run test all -s erlang halt
-test : COMPILE += ./test/*.erl
-test : all run
-
-
-compile :
-	erlc $(DEBUG) $(TEST) $(ERLC_WARNINGS) $(OPTIONS) -o ./ebin $(COMPILE)
-	-erl -noshell -pa ebin -s erldev make_app . -s erlang halt
-
-clean : 
-	-@rm ebin/*
-	-@rm erl_crash.dump
-
-
-run :
-##	erl -pa ebin -mnesia dir $(MNESIA_DIR) $(RUN_INIT)
-	erl -pa ebin $(RUN_INIT)
-
-
-devstart : RUN_INIT += -s ezic dev -s erlang halt
-devstart : all run
-
-
-tzdata :
-	-cat priv/tzdata/$(TZSET)  | sed '/\s*\#/d' |  sed '/^\s*$$/d' | less -S
-
-
-diff :
-	-git diff > /tmp/ezic.tmp.diff
-	emacs /tmp/ezic.tmp.diff
-
-
-debug : DEBUG += +debug_info
-##debug : RUN_INIT += -s ezic dev
-debug : all run
+zones:
+	wget "http://www.iana.org/time-zones/repository/tzdata-latest.tar.gz"
+	mkdir -p priv/tzdata
+	tar -xvzf tzdata-latest.tar.gz -C priv/tzdata
+	rm tzdata-latest.tar.gz
+	ulimit -n 1024
+	erl -pa ebin -s ezic_generator generate -s erlang halt
+	erlc -o ebin zones/*.erl
