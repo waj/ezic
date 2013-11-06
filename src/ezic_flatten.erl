@@ -284,7 +284,7 @@ finish_and_start_flat(max_year, FlatStub, DSTOffset) ->
 
 
 %% both timezone and rule are ending at the same time
-finish_flatzone_both(FlatStub=#flatzone{}, EndingZone=#zone{}, ChangingRule=#rule{save=NewDST}, EndingDST) ->
+finish_flatzone_both(FlatStub=#flatzone{}, EndingZone=#zone{}, _ChangingRule=#rule{save=NewDST}, EndingDST) ->
     %% ?debugVal(FlatStub),
 
     EndDatesP1={_,_,UD}= ezic_zone:project_end(EndingZone, EndingDST),
