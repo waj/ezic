@@ -1,5 +1,6 @@
 {application, ezic,
  [
+  {description, "Set of erlang utilities for the Olson timezone database files"},
   {registered, []},
   {vsn, "0.2.0"},
   {applications, [
